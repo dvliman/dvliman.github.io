@@ -18,7 +18,7 @@
       <description>&lt;p&gt;So you want to copy content in vi to system clipboard? You can use
 the register &lt;code&gt;&amp;quot;*&lt;/code&gt; (i.e &lt;code&gt;&amp;quot;*y&lt;/code&gt; to copy to clipboard, &lt;code&gt;&amp;quot;*p&lt;/code&gt; to paste from clipboard).&lt;/p&gt;
 
-&lt;p&gt;ake sure you have &lt;code&gt;+clipboard&lt;/code&gt; feature enabled (Vim 7.3+). You can check by running &lt;code&gt;vim --version | grep clipboard&lt;/code&gt;. If you don&amp;rsquo;t see , just run &lt;code&gt;brew install macvim --override-system-vim&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Make sure you have &lt;code&gt;+clipboard&lt;/code&gt; feature enabled (Vim 7.3+). You can check by running &lt;code&gt;vim --version | grep clipboard&lt;/code&gt;. If you don&amp;rsquo;t see , just run &lt;code&gt;brew install macvim --override-system-vim&lt;/code&gt;&lt;/p&gt;
 </description>
     </item>
     
