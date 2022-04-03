@@ -2,6 +2,7 @@ baseURL = 'https://dvliman.github.io'
 languageCode = 'en-us'
 title = "David Liman's blog"
 theme = "hugo-journal"
+publishDir = "docs"
 
 [params]
   description = "A product-minded engineer. Clojurian."
