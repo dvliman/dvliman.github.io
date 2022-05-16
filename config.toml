@@ -1,10 +1,22 @@
 baseURL = 'https://dvliman.github.io'
 languageCode = 'en-us'
-title = "David Liman's blog"
-theme = "hugo-journal"
+title = "David Liman"
+theme = "etch"
 publishDir = "docs"
 
 [params]
   description = "A product-minded engineer. Clojurian."
-  githubUsername = "dvliman"
-  twitterUsername = "dvliman"
+  copyright = "Copyright © 2022 David Liman"
+  dark = "off"
+  highlight = true
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "posts"
+    title = "posts"
+    url = "/"
+    weight = 10
+
+[permalinks]
+  posts = "/:title/"
