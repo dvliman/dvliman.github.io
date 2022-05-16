@@ -10,13 +10,5 @@ publishDir = "docs"
   dark = "off"
   highlight = true
 
-[menu]
-  [[menu.main]]
-    identifier = "posts"
-    name = "posts"
-    title = "posts"
-    url = "/"
-    weight = 10
-
 [permalinks]
   posts = "/:title/"
