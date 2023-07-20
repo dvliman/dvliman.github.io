@@ -7,7 +7,7 @@ draft: false
 
 Hi there 👋, I am David Liman.
 
-I am a software engineer with over a decade of experience building backend services. I have worked in different industries, from advertising, medical, fintech, and fitness space.
+I am a software engineer with two decades of experience building backend services. I have worked in different industries, from advertising, medical, fintech, and fitness space.
 
 I am a technologist and a problem solver. I always look for simple solutions to complex problems.
 My ideal role would involve designing, building, documenting, and maintaining systems. 
