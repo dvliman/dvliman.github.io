@@ -9,8 +9,7 @@ Hi there 👋, I am David Liman.
 
 I am a software engineer with two decades of experience building backend services. I have worked in different industries, from advertising, medical, fintech, and fitness space.
 
-I am a technologist and a problem solver. I always look for simple solutions to complex problems.
-My ideal role would involve designing, building, documenting, and maintaining systems. 
+I am a technologist and a problem solver. My ideal role would involve designing, building, documenting, and maintaining products and systems. 
 I am happiest when I can alternate high-level and low-level work.
 
 I believe people do their best thinking when they come together to solve problems when they are supported, respected, and growing. I find bottom-up leadership more appealing.
