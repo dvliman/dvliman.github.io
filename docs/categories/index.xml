@@ -24,120 +24,65 @@
 &lt;p&gt;In the next version, I almost always wrap println in a function in the same namespace, slurp, and raise the forms. This helps speed up typing a little bit. We still have to undo changes&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;(def state (atom nil))&lt;/code&gt;&lt;/strong&gt;&lt;br&gt;
 &lt;strong&gt;&lt;code&gt;(defn x [x] (reset! state x))&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Very useful to capture any data that goes beyond primitive values. Deref the state. Rinse and repeat.&lt;/p&gt;
+&lt;p&gt;Very useful to capture any data that goes beyond primitive values. Deref the state. Now you can manipulate the data.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;IDE debuggers&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I have my fair share of trying out different debugger tools: cider debugger, enlighten, cursive debuggers, etc. They are handy for tracing codebases. They automatically follow the call chains, often leading you to code branches that you did not expect.&lt;/p&gt;
-&lt;p&gt;But in practice, I don&amp;rsquo;t use them as much - mainly because I feel like they can be a bit distracting due to how we generally instrument the breakpoints, hitting next / up/down the call stack.&lt;/p&gt;
+&lt;p&gt;I have my fair share of trying out different debugger tools: cider debugger, enlighten, cursive debuggers, etc. They are handy for tracing codebases. They automatically follow the callstacks, often leading you to code branches that you did not expect.&lt;/p&gt;
+&lt;p&gt;But in practice, I don&amp;rsquo;t use them as much - mainly because I feel like they can be a bit distracting due to how we generally instrument the breakpoints, hitting next/up/down the call stack, inspecting values, etc.&lt;/p&gt;
 &lt;p&gt;They are definitely useful as a starting point in big and unfamiliar codebases&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Clojure libraries such as &lt;a href=&#34;https://github.com/dgrnbrg/spyscope&#34;&gt;spyscope&lt;/a&gt;, &lt;a href=&#34;https://github.com/weavejester/hashp&#34;&gt;hashp&lt;/a&gt;, &lt;a href=&#34;https://github.com/vvvvalvalval/scope-capture&#34;&gt;scope-capture&lt;/a&gt;, etc&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;There are plenty of excellent functions and macros that help with debugging. Some printout recursive calls nicely. I tend to fall back to something simple like a hashp. It gets the job done nicely. Saves some typing&lt;/p&gt;
 &lt;p&gt;Then one day, when I was pairing with my colleague Craig Ludington; he used a combination of println, atom, and reader macro - all at once; which I thought was pretty cool. I ended up modifying and extending his debug code but I want to give credit back to him - Thank you, Craig!&lt;/p&gt;
-&lt;p&gt;Let&amp;rsquo;s say we have this (hypothetical) code:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(defn between [from target to]
-  (and (&amp;lt;= from target) (&amp;lt;= target to)))
-
-(defn calculate-loan-size
-  [loan-amount]
-  (cond
-    (between 1 loan-amount 10000) :small
-    (between 10001 loan-amount 50000) :modest
-    (between 50001 loan-amount 150000) :large
-    (&amp;gt;= loan-amount 150001) :jumbo))
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And the ask is to modify such that if the &lt;code&gt;loan-amount&lt;/code&gt; input was 10000.50, the output should be &lt;code&gt;:modest&lt;/code&gt;, not &lt;code&gt;:small&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;We can add a reader tag that looks like this&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(defn calculate-loan-size
-  [loan-amount]
-  (cond
-    #d (between 1 loan-amount 10000) :small
-    #d (between 10001 loan-amount 50000) :modest
-    #d (between 50001 loan-amount 150000) :large
-    #d (&amp;gt;= loan-amount 150001) :jumbo))
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Then run the code &lt;code&gt;(calculate-loan-size 10000.01)&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;We can call &lt;code&gt;(user/tags)&lt;/code&gt; to print out the debug tags. On emacs, I set the shortcut command+6 and command+5 to clear out the tags&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;[{0 [[1 :same-values (between 1 loan-amount 10000)] false]}
- {1 [[1 :same-values (between 10001 loan-amount 50000)] false]}
- {2 [[1 :same-values (between 50001 loan-amount 150000)] false]}
- {3 [[1 :same-values (&amp;gt;= loan-amount 150001)] false]}]
-&lt;/code&gt;&lt;/pre&gt;&lt;ol&gt;
+&lt;p&gt;Let&amp;rsquo;s say we have this (hypothetical) code:
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/d01208f7c48b40c44db89905b14bf0cd.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;And the ask is to modify such that if the &lt;code&gt;loan-amount&lt;/code&gt; input was 10000.50, the output should be &lt;code&gt;:modest&lt;/code&gt;, not &lt;code&gt;:small&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;We can add a reader tag that looks like this
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/d3e015fb667253c543af3b2318acd8b0.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;Then run the code &lt;code&gt;(calculate-loan-size 10000.50)&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;We can call &lt;code&gt;(user/tags)&lt;/code&gt; to print out the debug tags. On emacs, I set the shortcut command+6 and command+5 to clear out the tags
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/c387742ef299e175c13dc294893bb104.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;ol&gt;
 &lt;li&gt;0, 1, 2, and 3 corresponds to 4 forms that are being the debugged&lt;/li&gt;
 &lt;li&gt;1 and &lt;code&gt;:same-values&lt;/code&gt; indicates there we only 1 call and all of them have the same values. It is useful to know when we have multiple calls (intentional or not) and if the values are the same&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;(between 1 loan-amount 10000)&lt;/code&gt; is self explanatory&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;false&lt;/code&gt; is the return value&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;We can pull the value out with the index &lt;code&gt;(user/logs 0)&lt;/code&gt; or the form &lt;code&gt;(user/logs &#39;(between 1 loan-amount 10000))&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;user/logs takes variadic function. For example, if we capture an HTTP request map, we can do &lt;code&gt;(user/logs 0 last :header #(get &amp;quot;Content-Type&amp;quot;))&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This is how it is implemented in my &lt;code&gt;~/.clojure/user.clj&lt;/code&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(def log-store (atom {}))
-
-(defn debug [tag val]
-  (swap! log-store update-in [tag] #(conj (or % []) val))
-  val)
-
-(defn logs
-  [tag &amp;amp; functions]
-  (let [tag (if (number? tag)
-              (nth (keys @log-store) tag)
-              tag)]
-    (loop [values    (@log-store tag)
-           functions functions]
-      (if (seq functions)
-        (recur ((first functions) values)
-               (rest functions))
-        values))))
-
-(defn same-values? [x]
-  (if (= 1 (count (set x)))
-    :same-values
-    :different-values))
-
-(defn tags []
-  (-&amp;gt;&amp;gt; @log-store
-       (reduce-kv #(assoc %1 [(count %3) (same-values? %3) %2] (last %3)) {})
-       (map-indexed hash-map)
-       (into [])))
-
-(defn debug-data-reader [form]
-  `(debug (quote ~form) ~form))
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And &lt;code&gt;~/.clojure/data_readers.clj&lt;/code&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;{d user/debug-data-reader}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;I can load this code in any project i.e in the &lt;code&gt;deps.edn&lt;/code&gt;&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;{:aliases {:dev {:extra-paths [&amp;#34;/Users/dliman/.clojure&amp;#34;]}}}
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;On emacs, I have set the keybindings to:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(use-package! smartparens
-  :init
-  (map! :map smartparens-mode-map
-        ...
-        &amp;#34;s-5&amp;#34; #&amp;#39;user-reset-log-store
-        &amp;#34;s-6&amp;#34; #&amp;#39;user-tags
-        &amp;#34;s-7&amp;#34; #&amp;#39;user-logs))
-
-;; or
-
-(global-set-key (kbd &amp;#34;s-5&amp;#34;) &amp;#39;user-reset-log-store)
-(global-set-key (kbd &amp;#34;s-6&amp;#34;) &amp;#39;user-tags)
-(global-set-key (kbd &amp;#34;s-7&amp;#34;) &amp;#39;user-logs)
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;and the definitions:&lt;/p&gt;
-&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;(defun user-reset-log-store ()
-  (interactive)
-  (cider-interactive-eval
-    (format &amp;#34;
-(require &amp;#39;user)
-(reset! user/log-store {})&amp;#34;
-            (cider-last-sexp))))
-
-(defun user-tags ()
-  (interactive)
-  (cider--pprint-eval-form &amp;#34;(user/tags)&amp;#34;))
-
-(defun user-logs (&amp;amp;optional index-or-name)
-  (interactive)
-  (let* ((form (read-from-minibuffer &amp;#34;index-or-name: &amp;#34; index-or-name))
-         (command (if (string-match form &amp;#34;&amp;#34;)
-                      &amp;#34;(user/tags)&amp;#34;
-                    (format &amp;#34;(user/logs %s first)&amp;#34; form))))
-    (cider--pprint-eval-form command)))
-&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;With combination of keyboard shortcut, emacs buffer, running the code in REPL, this makes debugging a lot faster (for me)&lt;/p&gt;
+&lt;p&gt;We can pull the value out with the index &lt;code&gt;(user/logs 0)&lt;/code&gt; or with form &lt;code&gt;(user/logs &#39;(between 1 loan-amount 10000))&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11&#34;&gt;user/logs&lt;/a&gt; takes variadic function. For example, if we capture an HTTP request map, we can do &lt;code&gt;(user/logs 0 last :header #(get &amp;quot;Content-Type&amp;quot;))&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This is how it is implemented in my &lt;code&gt;~/.clojure/user.clj&lt;/code&gt;
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/9ae80ebbba797fde22e0f1915ce9f93c.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;And &lt;code&gt;~/.clojure/data_readers.clj&lt;/code&gt;
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/c70d3e88b88d3d623e2eec2d7fce68b6.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;I can load this code in any project i.e in the &lt;code&gt;deps.edn&lt;/code&gt;
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/9172a211270c38c0104d32e0579429f1.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;On emacs, I have set the keybindings to:
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/65ee959b2d498075bdf5e5d3075b5e8b.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;and the definitions:
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/93c1df9f053565de880392d966ee0572.js&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;With combinations of keyboard shortcuts, emacs buffers, and REPL, this makes debugging a lot faster (for me)&lt;/p&gt;
 &lt;p&gt;I hope this is useful for someone. I would love hear your thoughts on how you debug your clojure code!&lt;/p&gt;
+</description>
+    </item>
+    
+    
+    
+    <item>
+      <title>Don&#39;t use clj-time, use clojure.java-time instead</title>
+      <link>https://dvliman.github.io/post/dont-use-clj-time-use-clojurejava-time-instead/</link>
+      <pubDate>Wed, 10 Jan 2024 06:00:00 +0000</pubDate>
+      
+      <guid>https://dvliman.github.io/post/dont-use-clj-time-use-clojurejava-time-instead/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;I was trying out different blogging platform&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a href=&#34;https://dvliman.bearblog.dev/dont-use-clj-time-use-clojurejava-time-instead/&#34;&gt;https://dvliman.bearblog.dev/dont-use-clj-time-use-clojurejava-time-instead/&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
