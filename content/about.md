@@ -9,6 +9,8 @@ Hi there 👋, I am David Liman.
 
 I believe people do their best thinking when they come together to solve problems when they are supported, respected, and growing. I find bottom-up leadership more appealing.
 
+> You can reach me at limandavid@gmail.com
+
 ## Work projects
 - [Booking Holdings](https://www.booking.com/): Hotel pricing and availability (think: vacancy) for brands like agoda.com, booking.com, priceline.com
 - [Inspire Fitness](https://apps.apple.com/us/app/inspire-fitness/id1324164741): An app to access workout videos. I built
