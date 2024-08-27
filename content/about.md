@@ -5,7 +5,7 @@ type: "standard"
 draft: false
 ---
 
-Hi there 👋, I am David Liman. 
+Hi there 👋, I am David Liman. I am a product-focused engineer with strong proficiency in backend services and data infrastructure. Subject matter experience in  online travel, advertising, consumer and fintech space.
 
 I believe people do their best thinking when they come together to solve problems when they are supported, respected, and growing. I find bottom-up leadership more appealing.
 
