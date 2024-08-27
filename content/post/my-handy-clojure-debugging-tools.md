@@ -27,7 +27,7 @@ But in practice, I don't use them as much - mainly because I feel like they can 
 
 They are definitely useful as a starting point in big and unfamiliar codebases
 
-**Clojure libraries such as [spyscope](https://github.com/dgrnbrg/spyscope), [hashp](https://github.com/weavejester/hashp), [scope-capture](https://github.com/vvvvalvalval/scope-capture), etc**
+**Clojure libraries such as [spyscope](https://github.com/dgrnbrg/spyscope), [hashp](https://github.com/weavejester/hashp), [scope-capture](https://github.com/vvvvalvalval/scope-capture), [FlowStorm](http://www.flow-storm.org/), etc**
 
 There are plenty of excellent functions and macros that help with debugging. Some printout recursive calls nicely. I tend to fall back to something simple like a hashp. It gets the job done nicely. Saves some typing
 
