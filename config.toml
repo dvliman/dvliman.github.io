@@ -5,7 +5,7 @@ theme = "etch"
 publishDir = "docs"
 
 [params]
-  description = "A product-minded engineer. Clojurian."
+  description = "A product-minded engineer"
   copyright = "Copyright © 2022 David Liman"
   dark = "off"
   highlight = true
