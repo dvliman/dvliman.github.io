@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html><head>
+	
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-P71922QB8G"></script>
+	<script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-P71922QB8G');
+	</script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A product-minded engineer. Clojurian.">
+    
+    <link rel="shortcut icon" href="https://dvliman.github.io/favicon.ico">
+    
+    <link rel="stylesheet" href="/css/style.min.css">
+
+    <title>My handy Clojure debugging tools</title>
+</head>
+<body><header id="banner">
+    <h2><a href="https://dvliman.github.io">David Liman</a></h2>
+    <nav>
+        <ul>
+            <li>
+                <a href="/about/" title="About">About</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main id="content">
+<article>
+    <header id="post-header">
+        <h1>My handy Clojure debugging tools</h1>
+        <div>
+                <time>August 26, 2024</time>
+            </div>
+    </header><p>In this blog post, I’d like to share how my debugging tools for Clojure have evolved over the past years. Let&rsquo;s start with each tool</p>
+<p><strong><code>(println …)</code></strong></p>
+<p>It is the most versatile technique. There is no learning curve. Focus on tapping at the right places, make the assertions, and move on. The only downside would be there is quite a lot of typing and undo-ing after the fact</p>
+<p><strong><code>(defn x [x] (println x) x)</code></strong></p>
+<p>In the next version, I almost always wrap println in a function in the same namespace, slurp, and raise the forms. This helps speed up typing a little bit. We still have to undo changes</p>
+<p><strong><code>(def state (atom nil))</code></strong><br>
+<strong><code>(defn x [x] (reset! state x))</code></strong></p>
+<p>Very useful to capture any data that goes beyond primitive values. Deref the state. Rinse and repeat.</p>
+<p><strong>IDE debuggers</strong></p>
+<p>I have my fair share of trying out different debugger tools: cider debugger, enlighten, cursive debuggers, etc. They are handy for tracing codebases. They automatically follow the call chains, often leading you to code branches that you did not expect.</p>
+<p>But in practice, I don&rsquo;t use them as much - mainly because I feel like they can be a bit distracting due to how we generally instrument the breakpoints, hitting next / up/down the call stack.</p>
+<p>They are definitely useful as a starting point in big and unfamiliar codebases</p>
+<p><strong>Clojure libraries such as <a href="https://github.com/dgrnbrg/spyscope">spyscope</a>, <a href="https://github.com/weavejester/hashp">hashp</a>, <a href="https://github.com/vvvvalvalval/scope-capture">scope-capture</a>, etc</strong></p>
+<p>There are plenty of excellent functions and macros that help with debugging. Some printout recursive calls nicely. I tend to fall back to something simple like a hashp. It gets the job done nicely. Saves some typing</p>
+<p>Then one day, when I was pairing with my colleague Craig Ludington; he used a combination of println, atom, and reader macro - all at once; which I thought was pretty cool. I ended up modifying and extending his debug code but I want to give credit back to him - Thank you, Craig!</p>
+<p>Let&rsquo;s say we have this (hypothetical) code:</p>
+<pre tabindex="0"><code>(defn between [from target to]
+  (and (&lt;= from target) (&lt;= target to)))
+
+(defn calculate-loan-size
+  [loan-amount]
+  (cond
+    (between 1 loan-amount 10000) :small
+    (between 10001 loan-amount 50000) :modest
+    (between 50001 loan-amount 150000) :large
+    (&gt;= loan-amount 150001) :jumbo))
+</code></pre><p>And the ask is to modify such that if the <code>loan-amount</code> input was 10000.50, the output should be <code>:modest</code>, not <code>:small</code></p>
+<p>We can add a reader tag that looks like this</p>
+<pre tabindex="0"><code>(defn calculate-loan-size
+  [loan-amount]
+  (cond
+    #d (between 1 loan-amount 10000) :small
+    #d (between 10001 loan-amount 50000) :modest
+    #d (between 50001 loan-amount 150000) :large
+    #d (&gt;= loan-amount 150001) :jumbo))
+</code></pre><p>Then run the code <code>(calculate-loan-size 10000.01)</code></p>
+<p>We can call <code>(user/tags)</code> to print out the debug tags. On emacs, I set the shortcut command+6 and command+5 to clear out the tags</p>
+<pre tabindex="0"><code>[{0 [[1 :same-values (between 1 loan-amount 10000)] false]}
+ {1 [[1 :same-values (between 10001 loan-amount 50000)] false]}
+ {2 [[1 :same-values (between 50001 loan-amount 150000)] false]}
+ {3 [[1 :same-values (&gt;= loan-amount 150001)] false]}]
+</code></pre><ol>
+<li>0, 1, 2, and 3 corresponds to 4 forms that are being the debugged</li>
+<li>1 and <code>:same-values</code> indicates there we only 1 call and all of them have the same values. It is useful to know when we have multiple calls (intentional or not) and if the values are the same</li>
+<li><code>(between 1 loan-amount 10000)</code> is self explanatory</li>
+<li><code>false</code> is the return value</li>
+</ol>
+<p>We can pull the value out with the index <code>(user/logs 0)</code> or the form <code>(user/logs '(between 1 loan-amount 10000))</code></p>
+<p>user/logs takes variadic function. For example, if we capture an HTTP request map, we can do <code>(user/logs 0 last :header #(get &quot;Content-Type&quot;))</code></p>
+<p>This is how it is implemented in my <code>~/.clojure/user.clj</code></p>
+<pre tabindex="0"><code>(def log-store (atom {}))
+
+(defn debug [tag val]
+  (swap! log-store update-in [tag] #(conj (or % []) val))
+  val)
+
+(defn logs
+  [tag &amp; functions]
+  (let [tag (if (number? tag)
+              (nth (keys @log-store) tag)
+              tag)]
+    (loop [values    (@log-store tag)
+           functions functions]
+      (if (seq functions)
+        (recur ((first functions) values)
+               (rest functions))
+        values))))
+
+(defn same-values? [x]
+  (if (= 1 (count (set x)))
+    :same-values
+    :different-values))
+
+(defn tags []
+  (-&gt;&gt; @log-store
+       (reduce-kv #(assoc %1 [(count %3) (same-values? %3) %2] (last %3)) {})
+       (map-indexed hash-map)
+       (into [])))
+
+(defn debug-data-reader [form]
+  `(debug (quote ~form) ~form))
+</code></pre><p>And <code>~/.clojure/data_readers.clj</code></p>
+<pre tabindex="0"><code>{d user/debug-data-reader}
+</code></pre><p>I can load this code in any project i.e in the <code>deps.edn</code></p>
+<pre tabindex="0"><code>{:aliases {:dev {:extra-paths [&#34;/Users/dliman/.clojure&#34;]}}}
+</code></pre><p>On emacs, I have set the keybindings to:</p>
+<pre tabindex="0"><code>(use-package! smartparens
+  :init
+  (map! :map smartparens-mode-map
+        ...
+        &#34;s-5&#34; #&#39;user-reset-log-store
+        &#34;s-6&#34; #&#39;user-tags
+        &#34;s-7&#34; #&#39;user-logs))
+
+;; or
+
+(global-set-key (kbd &#34;s-5&#34;) &#39;user-reset-log-store)
+(global-set-key (kbd &#34;s-6&#34;) &#39;user-tags)
+(global-set-key (kbd &#34;s-7&#34;) &#39;user-logs)
+</code></pre><p>and the definitions:</p>
+<pre tabindex="0"><code>(defun user-reset-log-store ()
+  (interactive)
+  (cider-interactive-eval
+    (format &#34;
+(require &#39;user)
+(reset! user/log-store {})&#34;
+            (cider-last-sexp))))
+
+(defun user-tags ()
+  (interactive)
+  (cider--pprint-eval-form &#34;(user/tags)&#34;))
+
+(defun user-logs (&amp;optional index-or-name)
+  (interactive)
+  (let* ((form (read-from-minibuffer &#34;index-or-name: &#34; index-or-name))
+         (command (if (string-match form &#34;&#34;)
+                      &#34;(user/tags)&#34;
+                    (format &#34;(user/logs %s first)&#34; form))))
+    (cider--pprint-eval-form command)))
+</code></pre><p>With combination of keyboard shortcut, emacs buffer, running the code in REPL, this makes debugging a lot faster (for me)</p>
+<p>I hope this is useful for someone. I would love hear your thoughts on how you debug your clojure code!</p>
+</article>
+
+        </main><footer id="footer">
+    Copyright © 2022 David Liman
+</footer>
+</body>
+</html>
