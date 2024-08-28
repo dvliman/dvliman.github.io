@@ -53,7 +53,7 @@ We can call `(user/tags)` to print out the debug tags. On emacs, I set the short
 
 We can pull the value out with the index `(user/logs 0)` or with form `(user/logs '(between 1 loan-amount 10000))`
 
-[user/logs](https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11) takes variadic function. For example, if we capture an HTTP request map, we can do `(user/logs 0 last :header #(get "Content-Type"))`
+[user/logs](https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11) takes variadic function. For example, if we capture an HTTP request map, we can do `(user/logs 0 last :header #(get % "Content-Type"))`
 
 This is how it is implemented in my `~/.clojure/user.clj`
 {{< gist dvliman 9ae80ebbba797fde22e0f1915ce9f93c >}}

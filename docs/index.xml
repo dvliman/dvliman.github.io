@@ -51,7 +51,7 @@
 &lt;li&gt;&lt;code&gt;false&lt;/code&gt; is the return value&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;We can pull the value out with the index &lt;code&gt;(user/logs 0)&lt;/code&gt; or with form &lt;code&gt;(user/logs &#39;(between 1 loan-amount 10000))&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11&#34;&gt;user/logs&lt;/a&gt; takes variadic function. For example, if we capture an HTTP request map, we can do &lt;code&gt;(user/logs 0 last :header #(get &amp;quot;Content-Type&amp;quot;))&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11&#34;&gt;user/logs&lt;/a&gt; takes variadic function. For example, if we capture an HTTP request map, we can do &lt;code&gt;(user/logs 0 last :header #(get % &amp;quot;Content-Type&amp;quot;))&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This is how it is implemented in my &lt;code&gt;~/.clojure/user.clj&lt;/code&gt;
 &lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/9ae80ebbba797fde22e0f1915ce9f93c.js&#34;&gt;&lt;/script&gt;
 &lt;/p&gt;

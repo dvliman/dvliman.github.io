@@ -69,7 +69,7 @@
 <li><code>false</code> is the return value</li>
 </ol>
 <p>We can pull the value out with the index <code>(user/logs 0)</code> or with form <code>(user/logs '(between 1 loan-amount 10000))</code></p>
-<p><a href="https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11">user/logs</a> takes variadic function. For example, if we capture an HTTP request map, we can do <code>(user/logs 0 last :header #(get &quot;Content-Type&quot;))</code></p>
+<p><a href="https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11">user/logs</a> takes variadic function. For example, if we capture an HTTP request map, we can do <code>(user/logs 0 last :header #(get % &quot;Content-Type&quot;))</code></p>
 <p>This is how it is implemented in my <code>~/.clojure/user.clj</code>
 <script type="application/javascript" src="https://gist.github.com/dvliman/9ae80ebbba797fde22e0f1915ce9f93c.js"></script>
 </p>
