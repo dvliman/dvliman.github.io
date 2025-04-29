@@ -67,8 +67,8 @@ This specification is a joint collaboration between engineers from Netflix, Pivo
       <link>https://dvliman.github.io/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://dvliman.github.io/about/</guid>
-      <description>&lt;p&gt;Hi there 👋, I am David Liman. I am a product-focused engineer with strong proficiency in backend services and data infrastructure. Subject matter experience in  online travel, advertising, consumer and fintech space.&lt;/p&gt;
-&lt;p&gt;I believe people do their best thinking when they come together to solve problems when they are supported, respected, and growing. I find bottom-up leadership more appealing.&lt;/p&gt;
+      <description>&lt;p&gt;Hi there 👋, I am David Liman. I am a product-focused engineer. Subject matter experience in travel tech, fintech, health &amp;amp; wellness space. I am also an avid trader.&lt;/p&gt;
+&lt;p&gt;I believe people do their best thinking when they are supported, respected, and growing. I find bottom-up leadership more appealing.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;You can reach me at &lt;a href=&#34;mailto:limandavid@gmail.com&#34;&gt;limandavid@gmail.com&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
 &lt;h2 id=&#34;work-projects&#34;&gt;Work projects&lt;/h2&gt;
@@ -76,10 +76,7 @@ This specification is a joint collaboration between engineers from Netflix, Pivo
 &lt;li&gt;&lt;a href=&#34;https://www.booking.com/&#34;&gt;Booking Holdings&lt;/a&gt;: Hotel pricing and availability (think: vacancy) for brands like agoda.com, booking.com, priceline.com&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://apps.apple.com/us/app/inspire-fitness/id1324164741&#34;&gt;Inspire Fitness&lt;/a&gt;: An app to access workout videos. I built
 the &lt;a href=&#34;https://dev.to/dvliman/building-a-live-streaming-app-in-clojure-329m&#34;&gt;backend and video pipeline from scratch&lt;/a&gt; in Clojure. Grow from 5k to 80k subscribers&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://guardtime.com/&#34;&gt;Guardtime&lt;/a&gt;:  Investigate blockchain solutions. Solution engineer to help sell &lt;a href=&#34;https://datatracker.ietf.org/doc/html/rfc3161&#34;&gt;timestamping&lt;/a&gt; service.&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.zipcar.com/&#34;&gt;Zipcar&lt;/a&gt;: Connected car industry. Ingest telemetry/mobility data. Kafka streaming&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://apps.apple.com/us/app/tigerconnect/id355832697&#34;&gt;TigerConnect&lt;/a&gt;: A secure text messaging/communication platform for hospitals. I handle the &lt;a href=&#34;https://www.erlang.org/&#34;&gt;Erlang&lt;/a&gt; chat servers.&lt;/li&gt;
-&lt;li&gt;OneScreen now &lt;a href=&#34;https://www.adaptivem.com/adaptive-medias-announces-licensing-agreement-with-onescreen/&#34;&gt;Adaptive Media&lt;/a&gt;: Adtech. Work on data pipeline for ads clickstreams and impressions reporting.&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;https://ibm.com/&#34;&gt;IBM&lt;/a&gt;: developer tools. &lt;a href=&#34;https://jazz.net/products/rational-team-concert&#34;&gt;Rational Concert&lt;/a&gt;. Work on &lt;a href=&#34;https://www.w3.org/standards/semanticweb/&#34;&gt;semantic web&lt;/a&gt;, RDF, &lt;a href=&#34;https://www.w3.org/TR/rdf-sparql-query/&#34;&gt;SPARQL&lt;/a&gt; &lt;a href=&#34;https://jena.apache.org/&#34;&gt;Apache Jena&lt;/a&gt;. Granted my &lt;a href=&#34;https://patents.google.com/patent/US10108415B2&#34;&gt;first patent&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;</description>
     </item>
