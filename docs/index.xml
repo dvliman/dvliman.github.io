@@ -1,108 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>David Liman</title>
     <link>https://dvliman.github.io/</link>
     <description>Recent content on David Liman</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
+    <generator>Hugo -- 0.147.0</generator>
+    <language>en</language>
     <lastBuildDate>Mon, 26 Aug 2024 06:00:00 +0000</lastBuildDate>
-    
-	<atom:link href="https://dvliman.github.io/index.xml" rel="self" type="application/rss+xml" />
-    
-    
-    
+    <atom:link href="https://dvliman.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My handy Clojure debugging tools</title>
       <link>https://dvliman.github.io/post/my-handy-clojure-debugging-tools/</link>
       <pubDate>Mon, 26 Aug 2024 06:00:00 +0000</pubDate>
-      
       <guid>https://dvliman.github.io/post/my-handy-clojure-debugging-tools/</guid>
       <description>&lt;p&gt;In this blog post, I’d like to share how my debugging tools for Clojure have evolved over the past years. Let&amp;rsquo;s start with each tool&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;code&gt;(println …)&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;It is the most versatile technique. There is no learning curve. Focus on tapping at the right places, make the assertions, and move on. The only downside would be there is quite a lot of typing and undo-ing after the fact&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;(defn x [x] (println x) x)&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;In the next version, I almost always wrap println in a function in the same namespace, slurp, and raise the forms. This helps speed up typing a little bit. We still have to undo changes&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;code&gt;(def state (atom nil))&lt;/code&gt;&lt;/strong&gt;&lt;br&gt;
-&lt;strong&gt;&lt;code&gt;(defn x [x] (reset! state x))&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;Very useful to capture any data that goes beyond primitive values. Deref the state. Now you can manipulate the data.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;IDE debuggers&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;I have my fair share of trying out different debugger tools: cider debugger, enlighten, cursive debuggers, etc. They are handy for tracing codebases. They automatically follow the callstacks, often leading you to code branches that you did not expect.&lt;/p&gt;
-&lt;p&gt;But in practice, I don&amp;rsquo;t use them as much - mainly because I feel like they can be a bit distracting due to how we generally instrument the breakpoints, hitting next/up/down the call stack, inspecting values, etc.&lt;/p&gt;
-&lt;p&gt;They are definitely useful as a starting point in big and unfamiliar codebases&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Clojure libraries such as &lt;a href=&#34;https://github.com/dgrnbrg/spyscope&#34;&gt;spyscope&lt;/a&gt;, &lt;a href=&#34;https://github.com/weavejester/hashp&#34;&gt;hashp&lt;/a&gt;, &lt;a href=&#34;https://github.com/vvvvalvalval/scope-capture&#34;&gt;scope-capture&lt;/a&gt;, &lt;a href=&#34;http://www.flow-storm.org/&#34;&gt;FlowStorm&lt;/a&gt;, etc&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;There are plenty of excellent functions and macros that help with debugging. Some printout recursive calls nicely. I tend to fall back to something simple like a hashp. It gets the job done nicely. Saves some typing&lt;/p&gt;
-&lt;p&gt;Then one day, when I was pairing with my colleague Craig Ludington; he used a combination of println, atom, and reader macro - all at once; which I thought was pretty cool. I ended up modifying and extending his debug code but I want to give credit back to him - Thank you, Craig!&lt;/p&gt;
-&lt;p&gt;Let&amp;rsquo;s say we have this (hypothetical) code:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/d01208f7c48b40c44db89905b14bf0cd.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;And the ask is to modify such that if the &lt;code&gt;loan-amount&lt;/code&gt; input was 10000.50, the output should be &lt;code&gt;:modest&lt;/code&gt;, not &lt;code&gt;:small&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;We can add a reader tag that looks like this
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/d3e015fb667253c543af3b2318acd8b0.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;Then run the code &lt;code&gt;(calculate-loan-size 10000.50)&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;We can call &lt;code&gt;(user/tags)&lt;/code&gt; to print out the debug tags. On emacs, I set the shortcut command+6 and command+5 to clear out the tags
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/c387742ef299e175c13dc294893bb104.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;0, 1, 2, and 3 corresponds to 4 forms that are being the debugged&lt;/li&gt;
-&lt;li&gt;1 and &lt;code&gt;:same-values&lt;/code&gt; indicates there we only 1 call and all of them have the same values. It is useful to know when we have multiple calls (intentional or not) and if the values are the same&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;(between 1 loan-amount 10000)&lt;/code&gt; is self explanatory&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;false&lt;/code&gt; is the return value&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;We can pull the value out with the index &lt;code&gt;(user/logs 0)&lt;/code&gt; or with form &lt;code&gt;(user/logs &#39;(between 1 loan-amount 10000))&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/dvliman/.clojure/blob/cb2153279931f3537140d8a84335a73fbf989147/user.clj#L11&#34;&gt;user/logs&lt;/a&gt; takes variadic function. For example, if we capture an HTTP request map, we can do &lt;code&gt;(user/logs 0 last :header #(get % &amp;quot;Content-Type&amp;quot;))&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;This is how it is implemented in my &lt;code&gt;~/.clojure/user.clj&lt;/code&gt;
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/9ae80ebbba797fde22e0f1915ce9f93c.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;And &lt;code&gt;~/.clojure/data_readers.clj&lt;/code&gt;
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/c70d3e88b88d3d623e2eec2d7fce68b6.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;I can load this code in any project i.e in the &lt;code&gt;deps.edn&lt;/code&gt;
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/9172a211270c38c0104d32e0579429f1.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;On emacs, I have set the keybindings to:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/65ee959b2d498075bdf5e5d3075b5e8b.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;and the definitions:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/93c1df9f053565de880392d966ee0572.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;With combinations of keyboard shortcuts, emacs buffers, and REPL, this makes debugging a lot faster (for me)&lt;/p&gt;
-&lt;p&gt;I hope this is useful for someone. I would love hear your thoughts on how you debug your clojure code!&lt;/p&gt;
-</description>
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;(defn x [x] (println x) x)&lt;/code&gt;&lt;/strong&gt;&lt;/p&gt;</description>
     </item>
-    
-    
-    
     <item>
       <title>Don&#39;t use clj-time, use clojure.java-time instead</title>
       <link>https://dvliman.github.io/post/dont-use-clj-time-use-clojurejava-time-instead/</link>
       <pubDate>Wed, 10 Jan 2024 06:00:00 +0000</pubDate>
-      
       <guid>https://dvliman.github.io/post/dont-use-clj-time-use-clojurejava-time-instead/</guid>
       <description>&lt;blockquote&gt;
-&lt;p&gt;I was trying out different blogging platform&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;p&gt;Link to: &lt;a href=&#34;https://dvliman.bearblog.dev/dont-use-clj-time-use-clojurejava-time-instead/&#34;&gt;https://dvliman.bearblog.dev/dont-use-clj-time-use-clojurejava-time-instead/&lt;/a&gt;&lt;/p&gt;
-</description>
+&lt;p&gt;I was trying out different blogging platform&lt;/p&gt;&lt;/blockquote&gt;
+&lt;p&gt;Link to: &lt;a href=&#34;https://dvliman.bearblog.dev/dont-use-clj-time-use-clojurejava-time-instead/&#34;&gt;https://dvliman.bearblog.dev/dont-use-clj-time-use-clojurejava-time-instead/&lt;/a&gt;&lt;/p&gt;</description>
     </item>
-    
-    
-    
     <item>
       <title>Building a Live Streaming app in Clojure</title>
       <link>https://dvliman.github.io/post/livestreaming-clojure/</link>
       <pubDate>Mon, 28 Feb 2022 06:00:00 +0000</pubDate>
-      
       <guid>https://dvliman.github.io/post/livestreaming-clojure/</guid>
       <description>&lt;p&gt;I want to echo &lt;a href=&#34;https://twitter.com/ID_AA_Carmack&#34;&gt;John Carmack&lt;/a&gt;’s &lt;a href=&#34;https://twitter.com/ID_AA_Carmack/status/1258531455220609025&#34;&gt;tweet that all giant companies use open-source FFmpeg in the backends&lt;/a&gt;. &lt;a href=&#34;https://www.ffmpeg.org/&#34;&gt;FFmpeg&lt;/a&gt; is a core piece of technology that powers our live-streaming and recording system at Inspire Fitness. It certainly is high-quality open-source software that we use to record and stream countless hours of workout videos.&lt;/p&gt;
 &lt;p&gt;It looks like this:
-&lt;figure&gt;&lt;img src=&#34;https://raw.githubusercontent.com/dvliman/dvliman.github.io/master/resources/public/images/live-sessions.png&#34;
-         alt=&#34;live sessions&#34; width=&#34;296&#34; height=&#34;640&#34;/&gt;
+&lt;figure&gt;
+    &lt;img loading=&#34;lazy&#34; src=&#34;https://raw.githubusercontent.com/dvliman/dvliman.github.io/master/resources/public/images/live-sessions.png&#34;
+         alt=&#34;live sessions&#34; width=&#34;296&#34; height=&#34;640&#34;/&gt; 
 &lt;/figure&gt;
 
-&lt;figure&gt;&lt;img src=&#34;https://raw.githubusercontent.com/dvliman/dvliman.github.io/master/resources/public/images/session-detail.png&#34;
-         alt=&#34;session detail&#34; width=&#34;296&#34; height=&#34;640&#34;/&gt;
+&lt;figure&gt;
+    &lt;img loading=&#34;lazy&#34; src=&#34;https://raw.githubusercontent.com/dvliman/dvliman.github.io/master/resources/public/images/session-detail.png&#34;
+         alt=&#34;session detail&#34; width=&#34;296&#34; height=&#34;640&#34;/&gt; 
 &lt;/figure&gt;
 &lt;/p&gt;
 &lt;h1 id=&#34;users-can&#34;&gt;Users can:&lt;/h1&gt;
@@ -111,196 +50,38 @@
 &lt;li&gt;playback on-demand videos from our content library&lt;/li&gt;
 &lt;/ol&gt;
 &lt;h1 id=&#34;high-level&#34;&gt;High level&lt;/h1&gt;
-&lt;p&gt;Behind the scene, we have:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;IP cameras are wired up in each studio room.&lt;/li&gt;
-&lt;li&gt;The cameras support the RTSP protocol.&lt;/li&gt;
-&lt;li&gt;A software pipeline integrated with our custom CMS to broadcast (stream) our cameras feed to the internet while simultaneously recording and storing the content to AWS S3 storage for on-demand playback.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;h1 id=&#34;how-it-all-works-together&#34;&gt;How it all works together:&lt;/h1&gt;
-&lt;ol&gt;
-&lt;li&gt;
-&lt;p&gt;We configure classes (the recordings) to start at a particular time in our dashboard. The time aligns with our studio schedules, where gym members would often join our classes to work out alongside the instructors.&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;We &lt;a href=&#34;https://docs.aws.amazon.com/cli/latest/reference/ec2/run-instances.html&#34;&gt;kick off a dedicated ec2 instance with FFmpeg baked in an AMI image&lt;/a&gt; when the class starts. We call this our encoder/transcoder.
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/2aa587f7b024615e4697da7b48a00120.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;As soon as the ec2 boots up, it runs the cloud-init script, which starts the Clojure process and &lt;a href=&#34;https://github.com/tolitius/mount&#34;&gt;mount&lt;/a&gt; (a state management library) that would then starts the dependencies:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/e4a63a35091e83ebae3d29d34ade450a.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;This would in turn calls &lt;code&gt;start-stream&lt;/code&gt;:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/607974927b33b0e734de3704976bb32f.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;
-&lt;p&gt;The &lt;code&gt;start-stream&lt;/code&gt; logic is actually pretty simple. It pulls feed from our camera and egress out our CDN partner
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/e604c2981bfb691803d84bd0b4858e39.js&#34;&gt;&lt;/script&gt;
-
-The output would be a playback URL that our video player would be pulling from.&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Notice we are essentially invoking the FFmpeg that we bundled earlier to:&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;take input from RTSP transport protocol&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;https://www.ffmpeg.org/ffmpeg-formats.html&#34;&gt;argument flags for the video/audio codec&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;Flag&lt;/th&gt;
-&lt;th&gt;What it does&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;-re&lt;/td&gt;
-&lt;td&gt;read input at native frame rate. Mainly used to simulate a grab device i.e if you wanted to stream a video file, then you would want this, otherwise it might stream too fast&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-c:a aac&lt;/td&gt;
-&lt;td&gt;transcode to AAC codec&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-ar 48000&lt;/td&gt;
-&lt;td&gt;set the audio sample rate&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-b:a 128k&lt;/td&gt;
-&lt;td&gt;set the audio bitrate&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-c:v h264 or copy&lt;/td&gt;
-&lt;td&gt;transcode to h264 codec or simply send the frame verbatim to output&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-hls_time&lt;/td&gt;
-&lt;td&gt;the duration for video segment length&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;-f flv&lt;/td&gt;
-&lt;td&gt;says to deliver the output stream in an flv wrapper&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;rtmp://&lt;/td&gt;
-&lt;td&gt;is where the transcoded video stream get pushed to&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;The code is essentially a shell wrapper to FFmpeg command-line arguments. FFmpeg is the swiss-army tool for all video/audio codecs&lt;/p&gt;
-&lt;p&gt;The whole &lt;code&gt;encoder.clj&lt;/code&gt; is about 300 lines long with error handling. It handles file uploads (video segment files, FFmpeg logs for debugging), egress to primary and secondary/fallback RTMP slot, shutdown processes, and the ec2 instance when we are done with the recording.&lt;/p&gt;
-&lt;h1 id=&#34;lesson-learned&#34;&gt;Lesson learned&lt;/h1&gt;
-&lt;p&gt;This was a rescue project from Go to Clojure. The previous architecture had too many moving pieces, making HTTP requests across multiple micro-services. The main server would crash daily due to improper handling of WebSocket messages, causing messages to be lost and encoder instances not starting up on time.&lt;/p&gt;
-&lt;p&gt;The rewrite reduced the complexities. &lt;a href=&#34;https://www.youtube.com/watch?v=SxdOUGdseq4&#34;&gt;Simple Made Easy&lt;/a&gt; as &lt;a href=&#34;https://clojure.org/about/history&#34;&gt;Rich Hickey&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;Rewriting a project is never a good approach considering the opportunity cost. I evaluated a few offerings: &lt;a href=&#34;http://mux.com&#34;&gt;mux.com&lt;/a&gt;, Cloudflare Stream, Amazon IVS. On paper, they have all the building blocks we need. In addition, some have features like video analytics, policing/signing playback URL, which would be useful for us.&lt;/p&gt;
-&lt;p&gt;Ultimately, the fact that we still had 2 years contract with the CDN company was why we still manage our encoder.&lt;/p&gt;
-&lt;p&gt;In hindsight, if we consider the storage costs and S3 egress bandwidth fee on top of the CDN costs, I would probably go for ready-made solutions for our company stage. I would start optimizing when we have more traffic.&lt;/p&gt;
-&lt;p&gt;The good thing is that this system works really well for live-streaming workload with programmatic access. (Sidenote: barring occasional internet hiccups in our studio).&lt;/p&gt;
-&lt;p&gt;If you have a video production pipeline that involves heavy video editing, going with prebuilt software could be more flexible until you solidify the core functionalities.&lt;/p&gt;
-&lt;h1 id=&#34;special-thanks-to&#34;&gt;Special thanks to:&lt;/h1&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;a href=&#34;https://github.com/crinklywrappr&#34;&gt;Daniel Fitzpatrick&lt;/a&gt; and Vincent Ho. My coworkers helped proofread this article and maintain the broadcast system. I enjoy working with you both ❤️. We even have automated tests to prove the camera stream is working end to end!&lt;/li&gt;
-&lt;li&gt;Neil, our product manager, understands tech trade-offs and works with me to balance the product roadmap.&lt;/li&gt;
-&lt;li&gt;Daniel Glauser, who hired me for this Clojure gig&lt;/li&gt;
-&lt;/ol&gt;
-</description>
+&lt;p&gt;Behind the scene, we have:&lt;/p&gt;</description>
     </item>
-    
-    
-    
     <item>
       <title>Building a reactive web service with Spring Webflux, Kotlin, and PostgreSQL</title>
       <link>https://dvliman.github.io/post/spring-webflux-kotlin-postgresql/</link>
       <pubDate>Sun, 24 Mar 2019 09:00:00 +0000</pubDate>
-      
       <guid>https://dvliman.github.io/post/spring-webflux-kotlin-postgresql/</guid>
       <description>&lt;p&gt;This post shows how to create a reactive web service with Spring Webflux, Kotlin, PostgreSQL&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;For the context,&lt;a href=&#34;https://spring.io/&#34;&gt;Spring Framework 5&lt;/a&gt; introduced the so-called &lt;strong&gt;Reactive Stack&lt;/strong&gt;. The keyword &lt;code&gt;reactive&lt;/code&gt; refers to the &lt;a href=&#34;https://www.reactivemanifesto.org/&#34;&gt;Reactive Manifesto&lt;/a&gt;, which is a &lt;a href=&#34;https://github.com/reactive-streams/reactive-streams-jvm/blob/master/README.md&#34;&gt;specification&lt;/a&gt; for asynchronous stream processing with non-blocking back-pressure.
-This specification is a joint collaboration between engineers from Netflix, Pivotal, Red Hat, Twitter and many others. It has been implemented in many languages such as: Java, Javascript, Swift, NET, etc.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;blockquote&gt;
-&lt;p&gt;In short, Spring Webflux is a non-blocking web framework that uses &lt;a href=&#34;https://projectreactor.io/&#34;&gt;Reactor&lt;/a&gt; library, which implements the Reactive Streams Specifications, to asynchronously manage HTTP requests.&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h1 id=&#34;requirements&#34;&gt;Requirements&lt;/h1&gt;
-&lt;p&gt;Say we want to build an HTTP service that can do the following:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;curl -XPOST /api/users/create -d &#39;{&amp;quot;name&amp;quot;: &amp;quot;some-name&amp;quot;, &amp;quot;email&amp;quot;: &amp;quot;some-email&amp;quot;}&#39;&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;curl -XPOST /api/users/fetch -d &#39;{&amp;quot;userid&amp;quot;: 123}&#39;&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;curl -XPOST /api/users/all&lt;/code&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Note: the final code repo is &lt;a href=&#34;https://github.com/dvliman/spring-webflux-kotlin-postgresql/&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Let’s start the journey by going to &lt;a href=&#34;https://start.spring.io/&#34;&gt;Spring Initializr&lt;/a&gt;. It is a very handy tool to generate the skeleton project.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Project:&lt;/strong&gt; Gradle Project&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Language:&lt;/strong&gt; Kotlin&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Spring Boot:&lt;/strong&gt; 2.2.0 (SNAPSHOT)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Group:&lt;/strong&gt; com.dvliman&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Artifact:&lt;/strong&gt; demo&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Dependencies:&lt;/strong&gt; Reactive Web&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Generate Project — ⌘ + ⏎&lt;/strong&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;At this point, if you run &lt;code&gt;./gradlew bootRun&lt;/code&gt;, you should see something like this:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/118a912acf0c61016e1d8ca7b79d865e.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;Good! Now we just need to add additional dependencies:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/af1f260b9a7236bb67d3cb458923165f.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;Note: At the time of writing, there is no “official” reactive JDBC drivers. JDBC is inherently a blocking API. However, there are some third-party libraries that we can use. I picked David Moten’s rxjava2-jdbc library because it has a great &lt;a href=&#34;https://github.com/davidmoten/rxjava2-jdbc/blob/master/README.adoc&#34;&gt;documentation&lt;/a&gt; and it implements the Reactive Streams specifications&lt;/p&gt;
-&lt;h1 id=&#34;design&#34;&gt;Design&lt;/h1&gt;
-&lt;p&gt;Before we jump into coding, let’s think about what we need to build. At the minimum, we will need to:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;read a configuration file such as database connection string&lt;/li&gt;
-&lt;li&gt;be able to read and write some data into our database&lt;/li&gt;
-&lt;li&gt;process HTTP requests&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h1 id=&#34;coding&#34;&gt;Coding&lt;/h1&gt;
-&lt;p&gt;It is a good idea to start thinking about the data. So let’s define the schema
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/a23b16a492eee4bf75a84f4f95bb1aea.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;And write some queries to get a feel for how it works and what not
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/ee7a6c929ba6183fa3edc01adb0ce03d.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;Next, let’s write a code to read the config file:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/12646919ee99201aa542c5a47228b8dd.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;The &lt;code&gt;@Value&lt;/code&gt; annotation takes a SPEL-expression to evaluate config values in the &lt;code&gt;application.properties&lt;/code&gt; which contains the database connection string
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/fededaad0b1edc4d26030c190473c68c.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;Okay, now we can add a &lt;code&gt;@Configuration&lt;/code&gt; for all our &lt;code&gt;beans&lt;/code&gt;
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/cb4b250151757fcf8abd69fecf847e5a.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;With database connection bean setup, we can start wiring up the model and repository. So let’s work on that:
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/007f400e82f28ab65d2696fd473e118f.js&#34;&gt;&lt;/script&gt;
-
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/1e4a4d5d9a36e64a63727ba4636fbd8a.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;Notice how the return type signature is &lt;code&gt;Mono&amp;lt;User&amp;gt;&lt;/code&gt; or &lt;code&gt;Flux&amp;lt;User&amp;gt;&lt;/code&gt;? They are both implementations of Reactive Streams &lt;a href=&#34;http://www.reactive-streams.org/reactive-streams-1.0.0-javadoc/org/reactivestreams/Publisher.html&#34;&gt;Publisher&lt;/a&gt; interface. I am not going to go into too much details about Reactive Streams but in essence:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Mono is a stream of 0..1 elements&lt;/li&gt;
-&lt;li&gt;Flux is a stream of 0..N elements&lt;/li&gt;
-&lt;li&gt;a &lt;code&gt;Publisher&amp;lt;T&amp;gt;&lt;/code&gt; is responsible for publishing elements of type &lt;code&gt;T&lt;/code&gt; and provides a &lt;code&gt;subscribe&lt;/code&gt; method for subscribers to connect to it&lt;/li&gt;
-&lt;li&gt;a &lt;code&gt;Subscriber&amp;lt;T&amp;gt;&lt;/code&gt; connects to a &lt;code&gt;Publisher&lt;/code&gt;, receives a confirmation via &lt;code&gt;onSubscribe&lt;/code&gt;, then receive data via the &lt;code&gt;onNext&lt;/code&gt; callbacks and additional signals via &lt;code&gt;onError&lt;/code&gt; and &lt;code&gt;onComplete&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;a &lt;code&gt;Subscription&lt;/code&gt; represents a link between a &lt;code&gt;Publisher&lt;/code&gt; and a &lt;code&gt;Subscriber&lt;/code&gt;, and allows for backpressuring the publisher with &lt;code&gt;request&lt;/code&gt; or terminating the link with &lt;code&gt;cancel&lt;/code&gt;&lt;/li&gt;
-&lt;li&gt;a &lt;code&gt;Processor&lt;/code&gt; combines the capabilities of a &lt;code&gt;Publisher&lt;/code&gt; and a &lt;code&gt;Subscriber&lt;/code&gt;in a single interface&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;The next class to take a look is the class that handles the HTTP requests
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/db12cf21d3289e1eb12946d5c6730cc3.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;In Spring Webflux, HTTP handler is essentially a function that takes HTTP request and return HTTP response. &lt;code&gt;(ServerRequest) -&amp;gt; Mono&amp;lt;ServerResponse&amp;gt;&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Finally, let’s add a router that routes incoming HTTP requests to the HTTP handler based on URL, HTTP method, and Content-Type header
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://gist.github.com/dvliman/55861ba7e557704ab31d2a1ddd6a3198.js&#34;&gt;&lt;/script&gt;
-&lt;/p&gt;
-&lt;p&gt;That is it! Now you can test with curl:&lt;/p&gt;
-</description>
+This specification is a joint collaboration between engineers from Netflix, Pivotal, Red Hat, Twitter and many others. It has been implemented in many languages such as: Java, Javascript, Swift, NET, etc.&lt;/p&gt;</description>
     </item>
-    
-    
-    
-    
+    <item>
+      <title>About</title>
+      <link>https://dvliman.github.io/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://dvliman.github.io/about/</guid>
+      <description>&lt;p&gt;Hi there 👋, I am David Liman. I am a product-focused engineer with strong proficiency in backend services and data infrastructure. Subject matter experience in  online travel, advertising, consumer and fintech space.&lt;/p&gt;
+&lt;p&gt;I believe people do their best thinking when they come together to solve problems when they are supported, respected, and growing. I find bottom-up leadership more appealing.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You can reach me at &lt;a href=&#34;mailto:limandavid@gmail.com&#34;&gt;limandavid@gmail.com&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h2 id=&#34;work-projects&#34;&gt;Work projects&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.booking.com/&#34;&gt;Booking Holdings&lt;/a&gt;: Hotel pricing and availability (think: vacancy) for brands like agoda.com, booking.com, priceline.com&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://apps.apple.com/us/app/inspire-fitness/id1324164741&#34;&gt;Inspire Fitness&lt;/a&gt;: An app to access workout videos. I built
+the &lt;a href=&#34;https://dev.to/dvliman/building-a-live-streaming-app-in-clojure-329m&#34;&gt;backend and video pipeline from scratch&lt;/a&gt; in Clojure. Grow from 5k to 80k subscribers&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://guardtime.com/&#34;&gt;Guardtime&lt;/a&gt;:  Investigate blockchain solutions. Solution engineer to help sell &lt;a href=&#34;https://datatracker.ietf.org/doc/html/rfc3161&#34;&gt;timestamping&lt;/a&gt; service.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.zipcar.com/&#34;&gt;Zipcar&lt;/a&gt;: Connected car industry. Ingest telemetry/mobility data. Kafka streaming&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://apps.apple.com/us/app/tigerconnect/id355832697&#34;&gt;TigerConnect&lt;/a&gt;: A secure text messaging/communication platform for hospitals. I handle the &lt;a href=&#34;https://www.erlang.org/&#34;&gt;Erlang&lt;/a&gt; chat servers.&lt;/li&gt;
+&lt;li&gt;OneScreen now &lt;a href=&#34;https://www.adaptivem.com/adaptive-medias-announces-licensing-agreement-with-onescreen/&#34;&gt;Adaptive Media&lt;/a&gt;: Adtech. Work on data pipeline for ads clickstreams and impressions reporting.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://ibm.com/&#34;&gt;IBM&lt;/a&gt;: developer tools. &lt;a href=&#34;https://jazz.net/products/rational-team-concert&#34;&gt;Rational Concert&lt;/a&gt;. Work on &lt;a href=&#34;https://www.w3.org/standards/semanticweb/&#34;&gt;semantic web&lt;/a&gt;, RDF, &lt;a href=&#34;https://www.w3.org/TR/rdf-sparql-query/&#34;&gt;SPARQL&lt;/a&gt; &lt;a href=&#34;https://jena.apache.org/&#34;&gt;Apache Jena&lt;/a&gt;. Granted my &lt;a href=&#34;https://patents.google.com/patent/US10108415B2&#34;&gt;first patent&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+    </item>
   </channel>
 </rss>
