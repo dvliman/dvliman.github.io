@@ -14,7 +14,7 @@ minify:
 params:
   env: production
   title: David Liman
-  description: "David Liiman"
+  description: "David Liman"
   keywords: [Blog]
   author: David Liman
   images: []
@@ -29,8 +29,8 @@ params:
   ShowCodeCopyButtons: false
   ShowWordCount: true
   ShowRssButtonInSectionTermList: true
-  UseHugoToc: true
-  disableSpecial1stPost: false
+  UseHugoToc: false
+  disableSpecial1stPost: true
   disableScrollToTop: false
   comments: false
   hidemeta: false
