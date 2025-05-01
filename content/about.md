@@ -5,11 +5,11 @@ type: "standard"
 draft: false
 ---
 
-Hi there 👋 
+Hi there 👋. I am David
 
-I am David Liman. I am a product-focused engineer with subject matter experience in travel tech, finance, health & wellness space.
+I am a product-focused engineer with subject matter experience in travel tech, finance, health & wellness space.
 
-I believe people do their best thinking when they are supported, respected, and growing. I find bottom-up leadership more appealing.
+I believe people do their best thinking when they are supported, respected, and growing. I find bottom-up leadership more appealing. I prefer to work in the [following environment](https://maheshba.bitbucket.io/blog/2025/02/09/2025-skunks.html) although I learned to adapt to many environments.
 
 You can reach me at limandavid@gmail.com
 
